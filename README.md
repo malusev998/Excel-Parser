@@ -38,4 +38,6 @@
 
 1. AdmZip ( adm-zip )
 
+1. XMLDOM
+
 ## Licence MIT
