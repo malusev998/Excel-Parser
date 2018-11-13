@@ -10,16 +10,7 @@ class Mapper {
      */
     constructor(sharedStrings, sheetXml) {
         this.sharedStrings = sharedStrings;
-        this.sheet = sheetXml
-
-        /**
-         * @var {Row}
-         */
-        this.header = null;
-        /**
-         * @var {Row[]}
-         */
-        this.rows = [];
+        this.sheet = sheetXml;
     }
 
     /**
@@ -60,7 +51,8 @@ class Mapper {
     }
 
     /**
-     * @returns {}
+     * Maps the cells to an object literal
+     * @returns { { value, position, type }[] }
      */
     mapCellsToObject() {
         return this.mapCells.map(cell => cell.toObject());
@@ -80,13 +72,16 @@ class Mapper {
         return body;
     }
 
-
     /**
+     * Parsers the rest of the excel file
+     * Without the header row
      * Header row is used for keys in object
+     * @returns { { {rowNumber, cells} }[] }
      */
     mapBodyToObject() {
         return this.mapBody().map(r => r.toObject());
     }
+
     /**
      * Finds appropriate string inside sharedStrings.xml
      * @param {number} sharedStringPosition 
@@ -105,9 +100,9 @@ class Mapper {
      * @param {ChildNode}
      */
     mapType(type, cell) {
-
         switch (type) {
             case "":
+                // TODO: Add More type checks with regex
                 return cell === null ? null : parseFloat(cell);
             case 's':
                 return cell === null ? null :

@@ -5,8 +5,8 @@
 
 ## Usage
 
-```js 
-	let excel = new Excel( new DOMParser(),'path/to/excel/file' ); // Instanciate Excel
+```javascript
+	let excel = new Excel('path/to/excel/file' ); // Instanciate Excel
 	
 	// To get object from worksheet
 	// Pass the number for worksheet ( starts from 1, not from 0 )

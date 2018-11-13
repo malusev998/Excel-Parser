@@ -1,5 +1,6 @@
 class Row {
     /**
+     * Constructor
      * @param {Cell[]} cells cells in row
      * @param {number} rowNumber current row number
      * @param {string[]} keys header values
@@ -15,13 +16,15 @@ class Row {
     /**
      * Gets the cell with the its excel position ex. A1, B6
      * @param {string} position 
-     * @returns {Cell}
+     * @returns {Cell|null}
      */
     getCellByPosition(position) {
-        return this.cells.filter(cell => cell.getPosition() === position)[0];
+        let cell = this.cells.filter(cell => cell.getPosition() === position);
+        return cell.length === 0 ? null : cell[0];
     }
 
     /**
+     * Returns all cells from a excel row
      * @returns {Cell[]}
      */
     getAllCells() {
@@ -29,6 +32,7 @@ class Row {
     }
 
     /**
+     * Gets the row number inside excel
      * @returns {number}
      */
     getRowNumber() {
@@ -37,7 +41,7 @@ class Row {
 
 
     /**
-     * Formats Excel row into javascript literal object
+     * Formats Excel row into javascript  object literal
      * @returns {rowNumber, cells}
      */
     toObject() {
