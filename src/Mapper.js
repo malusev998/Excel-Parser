@@ -1,17 +1,14 @@
-const AdmZip = require('adm-zip');
+
 const Cell = require('./Cell');
 const Row = require('./Row');
 
 class Mapper {
     /**
      * Constructor
-     * @param {DOMParser} parser
-     * @param {AdmZip} 
-     * @param {number} sheet
+     * @param {Document} sharedStrings
+     * @param {Document} sheetXml
      */
     constructor(sharedStrings, sheetXml) {
-        this.parser = parser;
-        this.admZip = admZip;
         this.sharedStrings = sharedStrings;
         this.sheet = sheetXml
 
@@ -25,10 +22,18 @@ class Mapper {
         this.rows = [];
     }
 
+    /**
+     * Parses the first row inside excel file
+     * @returns {Row}
+     */
     mapHeader() {
-        return new Row(this.mapCells(1), 1, true);
+        return new Row(this.mapCells(0), 1, true);
     }
 
+    /**
+     * Maps excel header row to javascript literal object
+     * @returns {{rowNumber, cells}[]}
+     */
     mapHeaderToObject() {
         return this.mapHeader().toObject();
     }
@@ -43,22 +48,27 @@ class Mapper {
         if (typeof rowNumber !== 'number') {
             throw new Error('rowNumber is not type of number');
         }
-
-        try {
-            let row = this.sheet.getElementsByTagName('row')[rowNumber];
-            let cells = [];
-            for (let cell of row.children) {
-                let value = this.mapType(cell.getAttribute('t'));
-                cells.push(new Cell(value, typeof value, cell.getAttribute('r')));
-            }
-            return cells;
-        } catch (err) {
-            throw err;
+        let row = this.sheet.getElementsByTagName('row')[rowNumber];
+        let cells = [];
+        let children = row.getElementsByTagName('c');
+        for (let i = 0; i < children.length; i++) {
+            let value = this.mapType(children[i].getAttribute('t'), children[i].childNodes[1].textContent);
+            cells.push(new Cell(value, typeof value, children[i].getAttribute('r')));
         }
+        return cells;
 
     }
 
     /**
+     * @returns {}
+     */
+    mapCellsToObject() {
+        return this.mapCells.map(cell => cell.toObject());
+    }
+
+    /**
+     * Parsers the rest of the excel file
+     * Without the header row
      * @returns {Row[]}
      */
     mapBody() {
@@ -71,6 +81,9 @@ class Mapper {
     }
 
 
+    /**
+     * Header row is used for keys in object
+     */
     mapBodyToObject() {
         return this.mapBody().map(r => r.toObject());
     }
@@ -83,20 +96,22 @@ class Mapper {
         return this.sharedStrings
             .getElementsByTagName('si')[sharedStringPosition]
             .firstChild
-            .nodeValue;
+            .textContent;
     }
 
     /**
      * Maps the element value based on the type in excel cell
      * @param {string} type 
+     * @param {ChildNode}
      */
-    mapType(type) {
+    mapType(type, cell) {
+
         switch (type) {
-            case null:
-                return cell.firstElementChild === null ? null : parseFloat(cell.firstElementChild.nodeValue);
+            case "":
+                return cell === null ? null : parseFloat(cell);
             case 's':
-                return cell.firstElementChild.nodeValue === null ? null :
-                    this.findInSharedString(parseInt(cell.firstElementChild.nodeValue));
+                return cell === null ? null :
+                    this.findInSharedString(parseInt(cell));
         }
     }
 }

@@ -27,6 +27,9 @@ class Cell {
         return `${this.position}: ${this.value}`;
     }
 
+    /**
+     * @returns { { value, position, type } }
+     */
     toObject() {
         return {
             value: this.value,
