@@ -1,17 +1,22 @@
-const Mapper = require('./Mapper');
-const AdmZip = require('adm-zip');
-const { DOMParser } = require('xmldom');
+const Mapper = require("./Mapper");
+const AdmZip = require("adm-zip");
+const xml = require("xmldom");
 class Excel {
 
     /**
      * Constructor 
      * @param {string}  zipFile 
+     * @param domParser Parser must support w3c level 2 compatibility, so everything can work as expected
      */
-    constructor(zipFile) {
+    constructor(zipFile, domParser = null) {
         /**
          * @var {DOMParser}
          */
-        this.parser = new DOMParser();
+        if (!domParser) {
+            this.parser = new xml.DOMParser();
+        } else {
+            this.parser = domParser;
+        }
 
         /**
          * @var {AdmZip}
@@ -20,21 +25,31 @@ class Excel {
         /**
          * @var {Document}
          */
-        this.sharedStrings = this.parser.parseFromString(this.zipper.readAsText('xl/sharedStrings.xml'), 'text/xml');
+        const readText = this.zipper.readAsText("xl/sharedStrings.xml");
+        this.sharedStrings = this.parser.parseFromString(readText, "text/xml");
         /**
          * @var {Row[]}
          */
         this.rows = null;
     }
+    // get sharedStrings() {
+    //     return this.sharedStrings;
+    // }
 
+    // set sharedStrings(value) {
+    //     this.sharedStrings = value;
+    // }
 
+    getSharedString() {
+        return this.sharedStrings;
+    }
     /**
      * Gets rows and cells by excel notations eg. A1:C5
      * @param {string} range
      */
     getRange(range) {
         if (!testRange(range)) {
-            throw new Error('Range is not in correct format');
+            throw new Error("Range is not in correct format");
         }
     }
 
@@ -59,15 +74,15 @@ class Excel {
      */
     getRow(rowNumber, worksheet = 1) {
         let row;
-        if (typeof worksheet === 'string') {
+        if (typeof worksheet === "string") {
             row = this.getWorksheetByName(worksheet).body;
-        } else if (typeof worksheet === 'number') {
+        } else if (typeof worksheet === "number") {
             if (this.rows === null) {
                 this.getRow(worksheet);
             }
         }
 
-        let row = this.rows.filter(r => r.getRowNumber() === rowNumber);
+        row = this.rows.filter(r => r.getRowNumber() === rowNumber);
         return row.length === 0 ? null :
             this.rows[rowNumber];
     }
@@ -80,8 +95,8 @@ class Excel {
      */
     parseXML(worksheet) {
         return this.parser
-            .parseFromString(this.admZip
-                .readAsText(`xl/worksheets/sheet${worksheet}.xml`), 'text/xml');
+            .parseFromString(this.zipper
+                .readAsText(`xl/worksheets/sheet${worksheet}.xml`), "text/xml");
     }
 
     /**
@@ -91,7 +106,7 @@ class Excel {
      */
     testRange(range) {
         // TODO: Needs implemenation
-        throw new Error('Function is no implemented');
+        throw new Error("Function is no implemented");
     }
 
     /**

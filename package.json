@@ -4,11 +4,13 @@
   "description": "Excel Converter From Node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha"
   },
   "author": "Dusan Malusev",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  },
   "dependencies": {
     "adm-zip": "^0.4.11",
     "xmldom": "^0.1.27"

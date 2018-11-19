@@ -1,6 +1,6 @@
 
-const Cell = require('./Cell');
-const Row = require('./Row');
+const Cell = require("./Cell");
+const Row = require("./Row");
 
 class Mapper {
     /**
@@ -36,15 +36,15 @@ class Mapper {
      * @returns {Cell[]}
      */
     mapCells(rowNumber) {
-        if (typeof rowNumber !== 'number') {
-            throw new Error('rowNumber is not type of number');
+        if (typeof rowNumber !== "number") {
+            throw new Error("rowNumber is not type of number");
         }
-        let row = this.sheet.getElementsByTagName('row')[rowNumber];
+        let row = this.sheet.getElementsByTagName("row")[rowNumber];
         let cells = [];
-        let children = row.getElementsByTagName('c');
+        let children = row.getElementsByTagName("c");
         for (let i = 0; i < children.length; i++) {
-            let value = this.mapType(children[i].getAttribute('t'), children[i].childNodes[1].textContent);
-            cells.push(new Cell(value, typeof value, children[i].getAttribute('r')));
+            let value = this.mapType(children[i].getAttribute("t"), children[i].childNodes[0].textContent);
+            cells.push(new Cell(value, typeof value, children[i].getAttribute("r")));
         }
         return cells;
 
@@ -64,9 +64,9 @@ class Mapper {
      * @returns {Row[]}
      */
     mapBody() {
-        let header = this.mapHeaderToObject().cells.map(cell => cell.value);
-        let body = [];
-        for (let i = 1; i < this.sheet.getElementsByTagName('row').length; i++) {
+        const header = this.mapHeaderToObject().cells.map(cell => cell.value);
+        const body = [];
+        for (let i = 1; i < this.sheet.getElementsByTagName("row").length; i++) {
             body.push(new Row(this.mapCells(i), i + 1, false, header));
         }
         return body;
@@ -89,7 +89,7 @@ class Mapper {
      */
     findInSharedString(sharedStringPosition) {
         return this.sharedStrings
-            .getElementsByTagName('si')[sharedStringPosition]
+            .getElementsByTagName("si")[sharedStringPosition]
             .firstChild
             .textContent;
     }
@@ -100,11 +100,13 @@ class Mapper {
      * @param {ChildNode}
      */
     mapType(type, cell) {
+        // console.log(cell);
         switch (type) {
+
             case "":
                 // TODO: Add More type checks with regex
                 return cell === null ? null : parseFloat(cell);
-            case 's':
+            case "s":
                 return cell === null ? null :
                     this.findInSharedString(parseInt(cell));
         }

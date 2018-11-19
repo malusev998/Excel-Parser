@@ -1,8 +1,10 @@
+const Cell = require("./Cell");
 class Row {
     /**
      * Constructor
      * @param {Cell[]} cells cells in row
      * @param {number} rowNumber current row number
+     * @param {boolean} isHeader defines if the row is a header (first row in excel file)
      * @param {string[]} keys header values
      */
     constructor(cells, rowNumber, isHeader = false, keys = []) {
