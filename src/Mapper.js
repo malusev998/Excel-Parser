@@ -100,11 +100,8 @@ class Mapper {
      * @param {ChildNode}
      */
     mapType(type, cell) {
-        // console.log(cell);
         switch (type) {
-
             case "":
-                // TODO: Add More type checks with regex
                 return cell === null ? null : parseFloat(cell);
             case "s":
                 return cell === null ? null :

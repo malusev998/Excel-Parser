@@ -32,25 +32,10 @@ class Excel {
          */
         this.rows = null;
     }
-    // get sharedStrings() {
-    //     return this.sharedStrings;
-    // }
 
-    // set sharedStrings(value) {
-    //     this.sharedStrings = value;
-    // }
 
     getSharedString() {
         return this.sharedStrings;
-    }
-    /**
-     * Gets rows and cells by excel notations eg. A1:C5
-     * @param {string} range
-     */
-    getRange(range) {
-        if (!testRange(range)) {
-            throw new Error("Range is not in correct format");
-        }
     }
 
     /**
@@ -99,15 +84,6 @@ class Excel {
                 .readAsText(`xl/worksheets/sheet${worksheet}.xml`), "text/xml");
     }
 
-    /**
-     * Do not use this method outside of a class
-     * @private
-     * @param {string} range 
-     */
-    testRange(range) {
-        // TODO: Needs implemenation
-        throw new Error("Function is no implemented");
-    }
 
     /**
      * Gets all rows from excel forksheet
@@ -125,15 +101,6 @@ class Excel {
         }
     }
 
-    /**
-     * Gets Excel Worksheet by name 
-     * @param {string} name
-     * @throws {Error} 
-     * @returns { {header: {rowNumber, cells}, body: Array<{rowNumber, cells}> } }
-     */
-    getWorksheetByName(name) {
-        // TODO: Find file that contains names of excel worksheet and return getWorksheet
-    }
 }
 
 module.exports = Excel;
